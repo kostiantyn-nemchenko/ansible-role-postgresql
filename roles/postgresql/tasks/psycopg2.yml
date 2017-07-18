@@ -1,0 +1,9 @@
+---
+
+- name: Install pip package
+  apt:
+    name: python-pip
+
+- name: Install psycopg2 adapter
+  pip: 
+    name: psycopg2

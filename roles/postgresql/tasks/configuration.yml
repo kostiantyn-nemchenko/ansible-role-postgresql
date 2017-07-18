@@ -1,0 +1,47 @@
+---
+
+- name: Configure PostgreSQL host-based authentication
+  template: 
+    src: pg_hba.conf.j2 
+    dest: "{{ postgresql_config_dir }}/pg_hba.conf"
+    owner: postgres
+    group: postgres
+    mode: 0644
+  notify:
+    - Reload PostgreSQL
+
+- name: Configure settings - postgres reload is enough to apply config changes
+  replace:
+    path: "{{ postgresql_config_dir }}/postgresql.conf"
+    replace: "{{ (item.name + ' = ' + item.value) if item.state == 'present' else ('#' + item.name + ' = ' + item.value) }}"
+    regexp: "^#?{{ item.name }} =(\\s*)(('.*')|(\\S*))(?=(?#))"
+    owner: postgres
+    group: postgres
+    mode: 0644
+  when: 'item.context != "postmaster"'
+  with_items:
+    - "{{ postgresql_config_settings }}"
+  notify:
+    - Reload PostgreSQL
+
+- name: Configure settings - postgres restart is required to apply config changes
+  replace:
+    path: "{{ postgresql_config_dir }}/postgresql.conf"
+    replace: "{{ (item.name + ' = ' + item.value) if item.state == 'present' else ('#' + item.name + ' = ' + item.value) }}"
+    regexp: "^#?{{ item.name }} =(\\s*)(('.*')|(\\S*))(?=(?#))"
+    owner: postgres
+    group: postgres
+    mode: 0644
+  when: 'item.context == "postmaster"'
+  with_items:
+    - "{{ postgresql_config_settings }}"
+  notify:
+    - Restart PostgreSQL
+
+- name: Configure pgpass-based access
+  template:
+    src: pgpass.j2
+    dest: ~postgres/.pgpass
+    owner: postgres
+    group: postgres
+    mode: 0600

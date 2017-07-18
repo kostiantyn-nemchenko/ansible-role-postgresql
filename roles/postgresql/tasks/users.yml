@@ -1,0 +1,18 @@
+---
+
+- block:
+    - name: Ensure PostgreSQL is running
+      service:
+        name: postgresql
+        state: started
+
+    - name: Create PostgreSQL Users
+      become_user: postgres
+      postgresql_user:
+        state: "{{ item.state | default('present') }}"
+        name: "{{ item.name }}"
+        password: "{{ item.password }}"
+        role_attr_flags: "{{ item.role_attr_flags}}"
+      with_items:
+        - "{{ postgresql_users }}"
+  when: postgresql_users|length > 0      

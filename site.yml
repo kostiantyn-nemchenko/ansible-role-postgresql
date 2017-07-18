@@ -1,0 +1,23 @@
+---
+
+- name: Set up postgresql primary server
+  hosts: postgresql_master
+  become: true
+  roles:
+    - role: postgresql
+      postgresql_enable_replication: true
+
+- name: Set up postgresql standby server
+  hosts: postgresql_slave
+  become: true
+  roles:
+    - role: postgresql
+      postgresql_enable_replication: true
+      postgresql_standby_mode: true
+      postgresql_remove_old_data_dir: true
+      postgresql_master_external_host: "{{ groups['postgresql_master'] | map('extract', hostvars, ['ansible_host']) | join(',') }}"
+      #postgresql_master_internal_host: "{{ groups['postgresql_master'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"
+      postgresql_replication_user:
+        name: rep_user
+        password: rep_user
+

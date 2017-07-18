@@ -1,0 +1,44 @@
+---
+
+postgresql_version: 9.6
+postgresql_cluster_name: main
+postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+postgresql_apt_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+postgresql_apt_packages: 
+  - { pkg: "postgresql-{{ postgresql_version }}",            state: "latest" }
+  - { pkg: "postgresql-contrib-{{ postgresql_version }}",    state: "latest" }
+  - { pkg: "postgresql-server-dev-{{ postgresql_version }}", state: "absent" }
+
+postgresql_admin_username: postgres
+postgresql_admin_password: supersercretpostgrespasswd
+
+postgresql_config_dir: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_port: 5432
+
+postgresql_standby_mode: false
+postgresql_enable_replication: false
+
+postgresql_remove_old_data_dir: false
+
+postgresql_hba_access:
+  - { type: 'local', database: 'all', user: 'postgres', address: '',             auth_method: 'peer' }
+  - { type: 'local', database: 'all', user: 'all',      address: '',             auth_method: 'peer' }
+  - { type: 'host',  database: 'all', user: 'all',      address: '127.0.0.1/32', auth_method: 'md5' }
+  - { type: 'host',  database: 'all', user: 'all',      address: '::1/128',      auth_method: 'md5' }
+
+postgresql_pgpass_entries:
+  - { host: 'localhost', port: "{{ postgresql_port }}", database: 'postgres', user: "{{ postgresql_admin_username }}", password: "{{ postgresql_admin_password }}" }
+  - { host: '127.0.0.1', port: "{{ postgresql_port }}", database: 'postgres', user: "{{ postgresql_admin_username }}", password: "{{ postgresql_admin_password }}" }
+
+postgresql_databases:
+  - { name: "db", owner: "postgres", state: "present" }
+
+postgresql_extensions:
+  - { name: "uuid-ossp",  state: "present" }
+  - { name: "postgis",    state: "present" }
+  - { name: "btree_gist", state: "present" }
+  - { name: "pg_trgm",    state: "present" }
+
+postgresql_users:
+  - { state: "present", name: "{{ postgresql_admin_username }}", password: "{{ postgresql_admin_password }}", role_attr_flags: "CREATEDB,SUPERUSER,LOGIN" }

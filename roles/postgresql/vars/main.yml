@@ -1,0 +1,352 @@
+postgresql_config_settings:
+#------------------------------------------------------------------------------
+# Autovacuum
+#------------------------------------------------------------------------------
+  - { name: "autovacuum",                          value: "on",        state: "present", context: "sighup" }
+  - { name: "autovacuum_analyze_scale_factor",     value: "0.05",      state: "present", context: "sighup" }
+  - { name: "autovacuum_analyze_threshold",        value: "50",        state: "absent",  context: "sighup" }
+  - { name: "autovacuum_freeze_max_age",           value: "200000000", state: "absent",  context: "postmaster" }
+  - { name: "autovacuum_max_workers",              value: "10",        state: "present", context: "postmaster" }
+  - { name: "autovacuum_multixact_freeze_max_age", value: "400000000", state: "absent",  context: "postmaster" }
+  - { name: "autovacuum_naptime",                  value: "30",        state: "present", context: "sighup" }
+  - { name: "autovacuum_vacuum_cost_delay",        value: "5ms",       state: "absent",  context: "sighup" }
+  - { name: "autovacuum_vacuum_cost_limit",        value: "-1",        state: "absent",  context: "sighup" }
+  - { name: "autovacuum_vacuum_scale_factor",      value: "0.05",      state: "present", context: "sighup" }
+  - { name: "autovacuum_vacuum_threshold",         value: "50",        state: "absent",  context: "sighup" }
+#------------------------------------------------------------------------------
+# Client Connection Defaults / Locale and Formatting
+#------------------------------------------------------------------------------
+  - { name: "client_encoding",            value: "UTF8",                 state: "absent", context: "user" }
+  - { name: "DateStyle",                  value: "'ISO, MDY'",           state: "absent", context: "user" }
+  - { name: "default_text_search_config", value: "'pg_catalog.english'", state: "absent", context: "user" }
+  - { name: "extra_float_digits",         value: "0",                    state: "absent", context: "user" }
+  - { name: "IntervalStyle",              value: "'postgres'",           state: "absent", context: "user" }
+  - { name: "lc_messages",                value: "'en_US.UTF-8'",        state: "absent", context: "superuser" }
+  - { name: "lc_monetary",                value: "'en_US.UTF-8'",        state: "absent", context: "user" }
+  - { name: "lc_numeric",                 value: "'en_US.UTF-8'",        state: "absent", context: "user" }
+  - { name: "lc_time",                    value: "'en_US.UTF-8'",        state: "absent", context: "user" }
+  - { name: "timezone",                   value: "'localtime'",          state: "absent", context: "user" }
+  - { name: "timezone_abbreviations",     value: "'Default'",            state: "absent", context: "user" }
+#------------------------------------------------------------------------------
+# Client Connection Defaults / Other Defaults
+#------------------------------------------------------------------------------ 
+  - { name: "dynamic_library_path",    value: "'$libdir'", state: "absent", context: "superuser" }
+  - { name: "gin_fuzzy_search_limit",  value: "0",         state: "absent", context: "user" }
+  - { name: "tcp_keepalives_count",    value: "0",         state: "absent", context: "user" }
+  - { name: "tcp_keepalives_idle",     value: "0",         state: "absent", context: "user" }
+  - { name: "tcp_keepalives_interval", value: "0",         state: "absent", context: "user" }
+#------------------------------------------------------------------------------
+# Client Connection Defaults / Shared Library Preloading
+#------------------------------------------------------------------------------ 
+  - { name: "local_preload_libraries",   value: "''",                   state: "absent",  context: "user" }
+  - { name: "session_preload_libraries", value: "''",                   state: "absent",  context: "superuser" }
+  - { name: "shared_preload_libraries",  value: "'pg_stat_statements'", state: "present", context: "postmaster" }
+#------------------------------------------------------------------------------
+# Client Connection Defaults / Statement Behavior
+#------------------------------------------------------------------------------ 
+  - { name: "bytea_output",                        value: "'hex'",               state: "absent",  context: "user" }
+  - { name: "check_function_bodies",               value: "on",                  state: "absent",  context: "user" }
+  - { name: "default_tablespace",                  value: "''",                  state: "absent",  context: "user" }
+  - { name: "default_transaction_deferrable",      value: "off",                 state: "absent",  context: "user" }
+  - { name: "default_transaction_isolation",       value: "'read committed'",    state: "absent",  context: "user" }
+  - { name: "default_transaction_read_only",       value: "off",                 state: "absent",  context: "user" }
+  - { name: "gin_pending_list_limit",              value: "4MB",                 state: "absent",  context: "user" }
+  - { name: "idle_in_transaction_session_timeout", value: "10min",               state: "present", context: "user" }
+  - { name: "lock_timeout",                        value: "0",                   state: "absent",  context: "user" }
+  - { name: "search_path",                         value: "'\"$user\", public'", state: "absent",  context: "user" }
+  - { name: "session_replication_role",            value: "'origin'",            state: "absent",  context: "superuser" }
+  - { name: "statement_timeout",                   value: "0",                   state: "absent",  context: "user" }
+  - { name: "temp_tablespaces",                    value: "''",                  state: "absent",  context: "user" }
+  - { name: "vacuum_freeze_min_age",               value: "50000000",            state: "absent",  context: "user" }
+  - { name: "vacuum_freeze_table_age",             value: "150000000",           state: "absent",  context: "user" }
+  - { name: "vacuum_multixact_freeze_min_age",     value: "5000000",             state: "absent",  context: "user" }
+  - { name: "vacuum_multixact_freeze_table_age",   value: "150000000",           state: "absent",  context: "user" }
+  - { name: "xmlbinary",                           value: "'base64'",            state: "absent",  context: "user" }
+  - { name: "xmloption",                           value: "'content'",           state: "absent",  context: "user" }
+#------------------------------------------------------------------------------
+# Connections and Authentication / Connection Settings
+#------------------------------------------------------------------------------ 
+  - { name: "bonjour",                        value: "off",                   state: "absent",  context: "postmaster" }
+  - { name: "bonjour_name",                   value: "''",                    state: "absent",  context: "postmaster" }
+  - { name: "listen_addresses",               value: "'*'",                   state: "present", context: "postmaster" }
+  - { name: "max_connections",                value: "100",                   state: "present", context: "postmaster" }
+  - { name: "port",                           value: "5432",                  state: "present", context: "postmaster" }
+  - { name: "superuser_reserved_connections", value: "10",                    state: "present", context: "postmaster" }
+  - { name: "unix_socket_directories",        value: "'/var/run/postgresql'", state: "absent",  context: "postmaster" }
+  - { name: "unix_socket_group",              value: "''",                    state: "absent",  context: "postmaster" }
+  - { name: "unix_socket_permissions",        value: "0777",                  state: "absent",  context: "postmaster" }
+#------------------------------------------------------------------------------
+# Connections and Authentication / Security and Authentication
+#------------------------------------------------------------------------------ 
+  - { name: "authentication_timeout",    value: "1min",                                     state: "absent", context: "sighup" }
+  - { name: "db_user_namespace",         value: "off",                                      state: "absent", context: "sighup" }
+  - { name: "krb_caseins_users",         value: "off",                                      state: "absent", context: "sighup" }
+  - { name: "krb_server_keyfile",        value: "''",                                       state: "absent", context: "sighup" }
+  - { name: "password_encryption",       value: "on",                                       state: "absent", context: "user" }
+  - { name: "row_security",              value: "on",                                       state: "absent", context: "user" }
+  - { name: "ssl",                       value: "on",                                       state: "absent", context: "postmaster" }
+  - { name: "ssl_ca_file",               value: "''",                                       state: "absent", context: "postmaster" }
+  - { name: "ssl_cert_file",             value: "'/etc/ssl/certs/ssl-cert-snakeoil.pem'",   state: "absent", context: "postmaster" }
+  - { name: "ssl_ciphers",               value: "'HIGH:MEDIUM:+3DES:!aNULL'",               state: "absent", context: "postmaster" }
+  - { name: "ssl_crl_file",              value: "''",                                       state: "absent", context: "postmaster" }
+  - { name: "ssl_ecdh_curve",            value: "'prime256v1'",                             state: "absent", context: "postmaster" }
+  - { name: "ssl_key_file",              value: "'/etc/ssl/private/ssl-cert-snakeoil.key'", state: "absent", context: "postmaster" }
+  - { name: "ssl_prefer_server_ciphers", value: "on",                                       state: "absent", context: "postmaster" }
+#------------------------------------------------------------------------------
+# Developer Options
+#------------------------------------------------------------------------------
+  - { name: "allow_system_table_mods", value: "off", state: "absent", context: "postmaster" }
+  - { name: "ignore_checksum_failure", value: "off", state: "absent", context: "superuser" }
+  - { name: "ignore_system_indexes",   value: "off", state: "absent", context: "backend" }
+  - { name: "post_auth_delay",         value: "0",   state: "absent", context: "backend" }
+  - { name: "pre_auth_delay",          value: "0",   state: "absent", context: "sighup" }
+  - { name: "trace_notify",            value: "off", state: "absent", context: "user" }
+  - { name: "trace_recovery_messages", value: "log", state: "absent", context: "sighup" }
+  - { name: "trace_sort",              value: "off", state: "absent", context: "user" }
+  - { name: "zero_damaged_pages",      value: "off", state: "absent", context: "superuser" }
+#------------------------------------------------------------------------------
+# Error Handling
+#------------------------------------------------------------------------------ 
+  - { name: "exit_on_error",       value: "off", state: "absent", context: "user" }
+  - { name: "restart_after_crash", value: "on",  state: "absent", context: "sighup" }
+#------------------------------------------------------------------------------
+# File Locations
+#------------------------------------------------------------------------------ 
+  - { name: "config_file",       value: "'/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/postgresql.conf'", state: "present", context: "postmaster" }
+  - { name: "data_directory",    value: "'/var/lib/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}'",             state: "present", context: "postmaster" }
+  - { name: "external_pid_file", value: "'/var/run/postgresql/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pid'",         state: "present", context: "postmaster" }
+  - { name: "hba_file",          value: "'/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/pg_hba.conf'",     state: "present", context: "postmaster" }
+  - { name: "ident_file",        value: "'/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}/pg_ident.conf'",   state: "present", context: "postmaster" }
+#------------------------------------------------------------------------------
+# Lock Management
+#------------------------------------------------------------------------------ 
+  - { name: "deadlock_timeout",               value: "1s", state: "absent", context: "superuser" }
+  - { name: "max_locks_per_transaction",      value: "64", state: "absent", context: "postmaster" }
+  - { name: "max_pred_locks_per_transaction", value: "64", state: "absent", context: "postmaster" }
+#------------------------------------------------------------------------------
+# Process Title
+#------------------------------------------------------------------------------ 
+  - { name: "cluster_name",         value: "'{{ postgresql_version }}/{{ postgresql_cluster_name }}'", state: "present", context: "postmaster" }
+  - { name: "update_process_title", value: "on",                                                       state: "absent",  context: "superuser" }
+#------------------------------------------------------------------------------
+# Query Tuning / Genetic Query Optimizer
+#------------------------------------------------------------------------------ 
+  - { name: "geqo",                value: "on",  state: "absent", context: "user" }
+  - { name: "geqo_effort",         value: "5",   state: "absent", context: "user" }
+  - { name: "geqo_generations",    value: "0",   state: "absent", context: "user" }
+  - { name: "geqo_pool_size",      value: "0",   state: "absent", context: "user" }
+  - { name: "geqo_seed",           value: "0.0", state: "absent", context: "user" }
+  - { name: "geqo_selection_bias", value: "2.0", state: "absent", context: "user" }
+  - { name: "geqo_threshold",      value: "12",  state: "absent", context: "user" }
+#------------------------------------------------------------------------------
+# Query Tuning / Genetic Query Optimizer
+#------------------------------------------------------------------------------ 
+  - { name: "constraint_exclusion",      value: "on",  state: "present", context: "user" }
+  - { name: "cursor_tuple_fraction",     value: "0.1", state: "absent",  context: "user" }
+  - { name: "default_statistics_target", value: "100", state: "absent",  context: "user" }
+  - { name: "force_parallel_mode",       value: "off", state: "absent",  context: "user" }
+  - { name: "from_collapse_limit",       value: "8",   state: "absent",  context: "user" }
+  - { name: "join_collapse_limit",       value: "8",   state: "absent",  context: "user" }
+#------------------------------------------------------------------------------
+# Query Tuning / Planner Cost Constants
+#------------------------------------------------------------------------------ 
+  - { name: "cpu_index_tuple_cost",       value: "0.005",                                      state: "absent",  context: "user" }
+  - { name: "cpu_operator_cost",          value: "0.0025",                                     state: "absent",  context: "user" }
+  - { name: "cpu_tuple_cost",             value: "0.01",                                       state: "absent",  context: "user" }
+  - { name: "effective_cache_size",       value: "{{ ( ansible_memtotal_mb * 0.75 )|int }}MB", state: "present", context: "user" }
+  - { name: "min_parallel_relation_size", value: "8MB",                                        state: "absent",  context: "user" }
+  - { name: "parallel_setup_cost",        value: "1000.0",                                     state: "absent",  context: "user" }
+  - { name: "parallel_tuple_cost",        value: "0.1",                                        state: "absent",  context: "user" }
+  - { name: "random_page_cost",           value: "4.0",                                        state: "absent",  context: "user" }
+  - { name: "seq_page_cost",              value: "1.0",                                        state: "absent",  context: "user" }
+#------------------------------------------------------------------------------
+# Query Tuning / Planner Method Configuration
+#------------------------------------------------------------------------------ 
+  - { name: "enable_bitmapscan",    value: "on", state: "absent", context: "user" }
+  - { name: "enable_hashagg",       value: "on", state: "absent", context: "user" }
+  - { name: "enable_hashjoin",      value: "on", state: "absent", context: "user" }
+  - { name: "enable_indexonlyscan", value: "on", state: "absent", context: "user" }
+  - { name: "enable_indexscan",     value: "on", state: "absent", context: "user" }
+  - { name: "enable_material",      value: "on", state: "absent", context: "user" }
+  - { name: "enable_mergejoin",     value: "on", state: "absent", context: "user" }
+  - { name: "enable_nestloop",      value: "on", state: "absent", context: "user" }
+  - { name: "enable_seqscan",       value: "on", state: "absent", context: "user" }
+  - { name: "enable_sort",          value: "on", state: "absent", context: "user" }
+  - { name: "enable_tidscan",       value: "on", state: "absent", context: "user" }
+#------------------------------------------------------------------------------
+# Replication
+#------------------------------------------------------------------------------ 
+  - { name: "track_commit_timestamp", value: "off", state: "absent", context: "postmaster" }
+#------------------------------------------------------------------------------
+# Replication / Master Server
+#------------------------------------------------------------------------------ 
+  - { name: "synchronous_standby_names", value: "''", state: "absent", context: "sighup" }
+  - { name: "vacuum_defer_cleanup_age",  value: "0",  state: "absent", context: "sighup" }
+#------------------------------------------------------------------------------
+# Replication / Sending Servers
+#------------------------------------------------------------------------------ 
+  - { name: "max_replication_slots",        value: "{{ 5 if postgresql_enable_replication else 0 }}",  state: "present", context: "postmaster" }
+  - { name: "max_wal_senders",              value: "{{ 5 if postgresql_enable_replication else 0 }}",  state: "present", context: "postmaster" }
+  - { name: "wal_keep_segments",            value: "20",                                               state: "absent",  context: "sighup" }
+  - { name: "wal_sender_timeout",           value: "60s",                                              state: "absent",  context: "sighup" }
+  - { name: "hot_standby",                  value: "{{ 'on' if postgresql_standby_mode else 'off' }}", state: "present", context: "postmaster" }
+  - { name: "hot_standby_feedback",         value: "{{ 'on' if postgresql_standby_mode else 'off' }}", state: "present", context: "sighup" }
+  - { name: "max_standby_archive_delay",    value: "30s",                                              state: "absent",  context: "sighup" }
+  - { name: "max_standby_streaming_delay",  value: "30s",                                              state: "absent",  context: "sighup" }
+  - { name: "wal_receiver_status_interval", value: "10s",                                              state: "absent",  context: "sighup" }
+  - { name: "wal_receiver_timeout",         value: "60s",                                              state: "absent",  context: "sighup" }
+  - { name: "wal_retrieve_retry_interval",  value: "5s",                                               state: "absent",  context: "sighup" }
+#------------------------------------------------------------------------------
+# Reporting and Logging / When to Log
+#------------------------------------------------------------------------------ 
+  - { name: "application_name",            value: "psql",                        state: "absent",  context: "user" }
+  - { name: "debug_pretty_print",          value: "on",                          state: "absent",  context: "user" }
+  - { name: "debug_print_parse",           value: "off",                         state: "absent",  context: "user" }
+  - { name: "debug_print_plan",            value: "off",                         state: "absent",  context: "user" }
+  - { name: "debug_print_rewritten",       value: "off",                         state: "absent",  context: "user" }
+  - { name: "log_autovacuum_min_duration", value: "5000",                        state: "present", context: "sighup" }
+  - { name: "log_checkpoints",             value: "on",                          state: "present", context: "sighup" }
+  - { name: "log_connections",             value: "on",                          state: "present", context: "superuser-backend" }
+  - { name: "log_disconnections",          value: "on",                          state: "present", context: "superuser-backend" }
+  - { name: "log_duration",                value: "off",                         state: "absent",  context: "superuser" }
+  - { name: "log_error_verbosity",         value: "default",                     state: "absent",  context: "superuser" }
+  - { name: "log_hostname",                value: "off",                         state: "absent",  context: "sighup" }
+  - { name: "log_line_prefix",             value: "'%m [%p-%l] %q%u@%d %r %i '", state: "present", context: "sighup" }
+  - { name: "log_lock_waits",              value: "on",                          state: "present", context: "superuser" }
+  - { name: "log_replication_commands",    value: "off",                         state: "absent",  context: "superuser" }
+  - { name: "log_statement",               value: "'ddl'",                       state: "present", context: "superuser" }
+  - { name: "log_temp_files",              value: "0",                           state: "present", context: "superuser" }
+  - { name: "log_timezone",                value: "'localtime'",                 state: "present", context: "sighup" }
+  - { name: "client_min_messages",         value: "notice",                      state: "absent",  context: "user" }
+  - { name: "log_min_duration_statement",  value: "500",                         state: "present", context: "superuser" }
+  - { name: "log_min_error_statement",     value: "error",                       state: "absent",  context: "superuser" }
+  - { name: "log_min_messages",            value: "notice",                      state: "present", context: "superuser" }
+#------------------------------------------------------------------------------
+# Reporting and Logging / Where to Log
+#------------------------------------------------------------------------------ 
+  - { name: "event_source",             value: "'PostgreSQL'",                     state: "absent",  context: "postmaster" }
+  - { name: "log_destination",          value: "'stderr'",                         state: "absent",  context: "sighup" }
+  - { name: "log_directory",            value: "'/var/log/postgresql'",            state: "present", context: "sighup" }
+  - { name: "log_file_mode",            value: "0600",                             state: "absent",  context: "sighup" }
+  - { name: "log_filename",             value: "'postgresql-%Y-%m-%d_%H%M%S.log'", state: "absent",  context: "sighup" }
+  - { name: "logging_collector",        value: "on",                               state: "present", context: "postmaster" }
+  - { name: "log_rotation_age",         value: "1d",                               state: "absent",  context: "sighup" }
+  - { name: "log_rotation_size",        value: "10MB",                             state: "absent",  context: "sighup" }
+  - { name: "log_truncate_on_rotation", value: "off",                              state: "absent",  context: "sighup" }
+  - { name: "syslog_facility",          value: "'LOCAL0'",                         state: "absent",  context: "sighup" }
+  - { name: "syslog_ident",             value: "'postgres'",                       state: "absent",  context: "sighup" }
+  - { name: "syslog_sequence_numbers",  value: "on",                               state: "absent",  context: "sighup" }
+  - { name: "syslog_split_messages",    value: "on",                               state: "absent",  context: "sighup" }
+#------------------------------------------------------------------------------
+# Resource Usage / Asynchronous Behavior
+#------------------------------------------------------------------------------ 
+  - { name: "backend_flush_after",             value: "0",  state: "absent", context: "user" }
+  - { name: "effective_io_concurrency",        value: "1",  state: "absent", context: "user" }
+  - { name: "max_parallel_workers_per_gather", value: "0",  state: "absent", context: "user" }
+  - { name: "max_worker_processes",            value: "8",  state: "absent", context: "postmaster" }
+  - { name: "old_snapshot_threshold",          value: "-1", state: "absent", context: "postmaster" }
+#------------------------------------------------------------------------------
+# Resource Usage / Background Writer
+#------------------------------------------------------------------------------ 
+  - { name: "bgwriter_delay",          value: "10000ms", state: "present", context: "sighup" }
+  - { name: "bgwriter_flush_after",    value: "512kB",   state: "absent",  context: "sighup" }
+  - { name: "bgwriter_lru_maxpages",   value: "1000",    state: "present", context: "sighup" }
+  - { name: "bgwriter_lru_multiplier", value: "10.0",    state: "present", context: "sighup" }
+#------------------------------------------------------------------------------
+# Resource Usage / Cost-Based Vacuum Delay
+#------------------------------------------------------------------------------
+  - { name: "vacuum_cost_delay",      value: "0",   state: "absent", context: "user" }
+  - { name: "vacuum_cost_limit",      value: "200", state: "absent", context: "user" }
+  - { name: "vacuum_cost_page_dirty", value: "20",  state: "absent", context: "user" }
+  - { name: "vacuum_cost_page_hit",   value: "1",   state: "absent", context: "user" }
+  - { name: "vacuum_cost_page_miss",  value: "10",  state: "absent", context: "user" }
+#------------------------------------------------------------------------------
+# Resource Usage / Disk
+#------------------------------------------------------------------------------
+  - { name: "temp_file_limit", value: "-1", state: "absent", context: "superuser" }
+#------------------------------------------------------------------------------
+# Resource Usage / Kernel Resources
+#------------------------------------------------------------------------------
+  - { name: "max_files_per_process", value: "10000", state: "present", context: "postmaster" }
+#------------------------------------------------------------------------------
+# Resource Usage / Memory
+#------------------------------------------------------------------------------
+  - { name: "autovacuum_work_mem",        value: "-1",                                       state: "absent",  context: "sighup" }
+  - { name: "dynamic_shared_memory_type", value: "posix",                                    state: "absent",  context: "postmaster" }
+  - { name: "huge_pages",                 value: "off",                                      state: "present", context: "postmaster" }
+  - { name: "maintenance_work_mem",       value: "64MB",                                     state: "present", context: "user" }
+  - { name: "max_prepared_transactions",  value: "0",                                        state: "absent",  context: "postmaster" }
+  - { name: "max_stack_depth",            value: "2MB",                                      state: "absent",  context: "superuser" }
+  - { name: "replacement_sort_tuples",    value: "150000",                                   state: "absent",  context: "user" }
+  - { name: "shared_buffers",             value: "{{ ( ansible_memtotal_mb / 4 )|int }}MB",  state: "present", context: "postmaster" }
+  - { name: "temp_buffers",               value: "8MB",                                      state: "absent",  context: "user" }
+  - { name: "track_activity_query_size",  value: "4096",                                     state: "present", context: "postmaster" }
+  - { name: "work_mem",                   value: "4MB",                                      state: "present", context: "user" }
+#------------------------------------------------------------------------------
+# Statistics / Monitoring
+#------------------------------------------------------------------------------ 
+  - { name: "log_executor_stats",  value: "off", state: "absent", context: "superuser" }
+  - { name: "log_parser_stats",    value: "off", state: "absent", context: "superuser" }
+  - { name: "log_planner_stats",   value: "off", state: "absent", context: "superuser" }
+  - { name: "log_statement_stats", value: "off", state: "absent", context: "superuser" }
+#------------------------------------------------------------------------------
+# Statistics / Query and Index Statistics Collector
+#------------------------------------------------------------------------------
+  - { name: "stats_temp_directory", value: "'/var/run/postgresql/main-main.pg_stat_tmp'", state: "absent",  context: "sighup" }
+  - { name: "track_activities",     value: "on",                                          state: "absent",  context: "superuser" }
+  - { name: "track_counts",         value: "on",                                          state: "absent",  context: "superuser" }
+  - { name: "track_functions",      value: "pl",                                          state: "present", context: "superuser" }
+  - { name: "track_io_timing",      value: "on",                                          state: "present", context: "superuser" }
+#------------------------------------------------------------------------------
+# Version and Platform Compatibility / Other Platforms and Clients
+#------------------------------------------------------------------------------ 
+  - { name: "transform_null_equals", value: "off", state: "absent", context: "user" }
+#------------------------------------------------------------------------------
+# Version and Platform Compatibility / Previous PostgreSQL Versions
+#------------------------------------------------------------------------------ 
+  - { name: "array_nulls",                 value: "on",            state: "absent", context: "user" }
+  - { name: "backslash_quote",             value: "safe_encoding", state: "absent", context: "user" }
+  - { name: "default_with_oids",           value: "off",           state: "absent", context: "user" }
+  - { name: "escape_string_warning",       value: "on",            state: "absent", context: "user" }
+  - { name: "lo_compat_privileges",        value: "off",           state: "absent", context: "superuser" }
+  - { name: "operator_precedence_warning", value: "off",           state: "absent", context: "user" }
+  - { name: "quote_all_identifiers",       value: "off",           state: "absent", context: "user" }
+  - { name: "sql_inheritance",             value: "on",            state: "absent", context: "user" }
+  - { name: "standard_conforming_strings", value: "on",            state: "absent", context: "user" }
+  - { name: "synchronize_seqscans",        value: "on",            state: "absent", context: "user" }
+#------------------------------------------------------------------------------
+# Write-Ahead Log / Archiving
+#------------------------------------------------------------------------------
+  - { name: "archive_command", value: "'/bin/true'", state: "present", context: "sighup" }
+  - { name: "archive_mode",    value: "on",          state: "present", context: "postmaster" }
+  - { name: "archive_timeout", value: "0",           state: "absent",  context: "sighup" }
+#------------------------------------------------------------------------------
+# Write-Ahead Log / Checkpoints
+#------------------------------------------------------------------------------ 
+  - { name: "checkpoint_completion_target", value: "0.9",   state: "present", context: "sighup" }
+  - { name: "checkpoint_flush_after",       value: "256kB", state: "absent",  context: "sighup" }
+  - { name: "checkpoint_timeout",           value: "60min", state: "present", context: "sighup" }
+  - { name: "checkpoint_warning",           value: "30s",   state: "absent",  context: "sighup" }
+  - { name: "max_wal_size",                 value: "2GB",   state: "present", context: "sighup" }
+  - { name: "min_wal_size",                 value: "80MB",  state: "absent",  context: "sighup" }
+#------------------------------------------------------------------------------
+# Write-Ahead Log / Settings
+#------------------------------------------------------------------------------ 
+  - { name: "commit_delay",           value: "0",                                                               state: "absent",  context: "superuser" }
+  - { name: "commit_siblings",        value: "5",                                                               state: "absent",  context: "user" }
+  - { name: "fsync",                  value: "on",                                                              state: "present", context: "sighup" }
+  - { name: "full_page_writes",       value: "on",                                                              state: "present", context: "sighup" }
+  - { name: "synchronous_commit",     value: "on",                                                              state: "present", context: "user" }
+  - { name: "wal_buffers",            value: "-1",                                                              state: "absent",  context: "postmaster" }
+  - { name: "wal_compression",        value: "off",                                                             state: "absent",  context: "superuser" }
+  - { name: "wal_level",              value: "{{ 'replica' if postgresql_enable_replication else 'minimal' }}", state: "present", context: "postmaster" }
+  - { name: "wal_log_hints",          value: "off",                                                             state: "absent",  context: "postmaster" }
+  - { name: "wal_sync_method",        value: "fsync",                                                           state: "absent",  context: "sighup" }
+  - { name: "wal_writer_delay",       value: "200ms",                                                           state: "absent",  context: "sighup" }
+  - { name: "wal_writer_flush_after", value: "1MB",                                                             state: "absent",  context: "sighup" }
+#------------------------------------------------------------------------------
+# CONFIG FILE INCLUDES
+#------------------------------------------------------------------------------ 
+  - { name: "include_dir",       value: "'conf.d'",       state: absent, context: "sighup" }
+  - { name: "include_if_exists", value: "'exists.conf'",  state: absent, context: "sighup" }
+  - { name: "include",           value: "'special.conf'", state: absent, context: "sighup" }

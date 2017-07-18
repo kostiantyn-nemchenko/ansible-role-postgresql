@@ -1,0 +1,20 @@
+---
+
+- name: Configure PostgreSQL APT key
+  apt_key: 
+    url: "{{ postgresql_apt_key_url }}" 
+    state: present
+
+- name: Configure PostgreSQL APT repository
+  apt_repository: 
+    repo: "{{ postgresql_apt_repo }}"
+    state: present
+
+- name: Install PostgreSQL APT packages
+  apt: 
+    pkg: "{{ item.pkg }}"
+    state: "{{ item.state }}"
+  with_items:
+    - "{{ postgresql_apt_packages }}"
+  notify:
+    - Start PostgreSQL
