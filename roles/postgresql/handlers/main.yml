@@ -4,13 +4,16 @@
     service: 
       name: postgresql
       state: started
+      enabled: yes
 
   - name: Restart PostgreSQL
     service: 
       name: postgresql
       state: restarted
+      enabled: yes
 
   - name: Reload PostgreSQL
     service: 
       name: postgresql
       state: reloaded
+      enabled: yes
