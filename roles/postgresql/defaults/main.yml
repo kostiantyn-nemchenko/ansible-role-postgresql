@@ -38,10 +38,53 @@ postgresql_databases:
   - { name: "db", owner: "postgres", state: "present" }
 
 postgresql_extensions:
-  - { name: "uuid-ossp",  state: "present" }
-  - { name: "postgis",    state: "present" }
-  - { name: "btree_gist", state: "present" }
-  - { name: "pg_trgm",    state: "present" }
+  - { name: "adminpack",          state: "absent" }  # administrative functions for PostgreSQL
+  - { name: "autoinc",            state: "absent" }  # functions for autoincrementing fields
+  - { name: "bloom",              state: "absent" }  # bloom access method - signature file based index
+  - { name: "btree_gin",          state: "absent" }  # support for indexing common datatypes in GIN
+  - { name: "btree_gist",         state: "absent" }  # support for indexing common datatypes in GiST
+  - { name: "chkpass",            state: "absent" }  # data type for auto-encrypted passwords
+  - { name: "citext",             state: "absent" }  # data type for case-insensitive character strings
+  - { name: "cube",               state: "absent" }  # data type for multidimensional cubes
+  - { name: "dblink",             state: "present" } # connect to other PostgreSQL databases from within a database
+  - { name: "dict_int",           state: "absent" }  # text search dictionary template for integers
+  - { name: "dict_xsyn",          state: "absent" }  # text search dictionary template for extended synonym processing
+  - { name: "earthdistance",      state: "absent" }  # calculate great-circle distances on the surface of the Earth
+  - { name: "file_fdw",           state: "absent" }  # foreign-data wrapper for flat file access
+  - { name: "fuzzystrmatch",      state: "absent" }  # determine similarities and distance between strings
+  - { name: "hstore",             state: "absent" }  # data type for storing sets of (key, value) pairs
+  - { name: "insert_username",    state: "absent" }  # functions for tracking who changed a table
+  - { name: "intagg",             state: "absent" }  # integer aggregator and enumerator (obsolete)
+  - { name: "intarray",           state: "absent" }  # functions, operators, and index support for 1-D arrays of integers
+  - { name: "isn",                state: "absent" }  # data types for international product numbering standards
+  - { name: "lo",                 state: "absent" }  # Large Object maintenance
+  - { name: "ltree",              state: "absent" }  # data type for hierarchical tree-like structures
+  - { name: "moddatetime",        state: "absent" }  # functions for tracking last modification time
+  - { name: "pageinspect",        state: "present" } # inspect the contents of database pages at a low level
+  - { name: "pg_buffercache",     state: "present" } # examine the shared buffer cache
+  - { name: "pgcrypto",           state: "absent" }  # cryptographic functions
+  - { name: "pg_freespacemap",    state: "present" } # examine the free space map (FSM)
+  - { name: "pg_prewarm",         state: "present" } # prewarm relation data
+  - { name: "pgrowlocks",         state: "present" } # show row-level locking information
+  - { name: "pg_stat_statements", state: "present" } # track execution statistics of all SQL statements executed
+  - { name: "pgstattuple",        state: "present" } # show tuple-level statistics
+  - { name: "pg_trgm",            state: "absent" }  # text similarity measurement and index searching based on trigrams
+  - { name: "pg_visibility",      state: "present" } # examine the visibility map (VM) and page-level visibility info
+  - { name: "plpgsql",            state: "present" } # PL/pgSQL procedural language
+  - { name: "postgis",            state: "absent" }  # PostGIS geometry, geography, and raster spatial types and functions
+  - { name: "postgres_fdw",       state: "present" } # foreign-data wrapper for remote PostgreSQL servers
+  - { name: "refint",             state: "absent" }  # functions for implementing referential integrity (obsolete)
+  - { name: "seg",                state: "absent" }  # data type for representing line segments or floating-point intervals
+  - { name: "sslinfo",            state: "absent" }  # information about SSL certificates
+  - { name: "tablefunc",          state: "absent" }  # functions that manipulate whole tables, including crosstab
+  - { name: "tcn",                state: "absent" }  # Triggered change notifications
+  - { name: "timetravel",         state: "absent" }  # functions for implementing time travel
+  - { name: "tsearch2",           state: "absent" }  # compatibility package for pre-8.3 text search functions
+  - { name: "tsm_system_rows",    state: "absent" }  # TABLESAMPLE method which accepts number of rows as a limit
+  - { name: "tsm_system_time",    state: "absent" }  # TABLESAMPLE method which accepts time in milliseconds as a limit
+  - { name: "unaccent",           state: "absent" }  # text search dictionary that removes accents
+  - { name: "uuid-ossp",          state: "absent" }  # generate universally unique identifiers (UUIDs)
+  - { name: "xml2",               state: "absent" }  # XPath querying and XSLT  
 
 postgresql_users:
   - { state: "present", name: "{{ postgresql_admin_username }}", password: "{{ postgresql_admin_password }}", role_attr_flags: "CREATEDB,SUPERUSER,LOGIN" }
