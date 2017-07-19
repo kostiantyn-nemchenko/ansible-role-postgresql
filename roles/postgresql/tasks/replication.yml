@@ -1,5 +1,9 @@
 ---
 
+- name: Define master host variable
+  set_fact:
+    postgresql_master_host: "{{ postgresql_master_internal_host if postgresql_master_internal_host is defined else postgresql_master_external_host }}"
+
 - block:
     - name: Ensure PostgreSQL primary server is running
       service:
@@ -49,14 +53,14 @@
 - name: Create .pgpass file entry to connect to primary server
   lineinfile:
     dest: ~postgres/.pgpass
-    line: "{{ postgresql_master_internal_host if postgresql_master_internal_host is defined else postgresql_master_external_host }}:{{ postgresql_master_port|default(5432) }}:replication:{{ postgresql_replication_user.name }}:{{ postgresql_replication_user.password }}"
+    line: "{{ postgresql_master_host }}:{{ postgresql_master_port|default(5432) }}:replication:{{ postgresql_replication_user.name }}:{{ postgresql_replication_user.password }}"
     owner: postgres
     group: postgres
     mode: 0600
 
 - name: Take base backup of a running PostgreSQL primary server
   become_user: postgres
-  command: "/usr/lib/postgresql/{{ postgresql_version }}/bin/pg_basebackup -R -X stream -c fast -h {{ postgresql_master_internal_host if postgresql_master_internal_host is defined else postgresql_master_external_host }} -p {{ postgresql_master_port|default(5432) }} -D {{ postgresql_data_dir }} -U {{ postgresql_replication_user.name }}"
+  command: "/usr/lib/postgresql/{{ postgresql_version }}/bin/pg_basebackup -R -X stream -c fast -h {{ postgresql_master_host }} -p {{ postgresql_master_port|default(5432) }} -D {{ postgresql_data_dir }} -U {{ postgresql_replication_user.name }}"
   args:
     creates: "{{ postgresql_data_dir }}/base"
 
