@@ -20,7 +20,7 @@
         login_password: "{{ postgresql_admin_password }}"
         port: "{{ postgresql_master_port|default(5432) }}"
 
-    - name: Add rules in pg_hba.conf on primary server to allow streaming replication
+    - name: Add rule in pg_hba.conf on primary server to allow streaming replication
       lineinfile:
         dest: "{{ postgresql_config_dir }}/pg_hba.conf"
         line: "host replication {{ postgresql_replication_user.name }} {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] if postgresql_master_internal_host is defined else ansible_host }}/32 md5"
