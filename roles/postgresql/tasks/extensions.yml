@@ -5,6 +5,7 @@
       service:
         name: postgresql
         state: started
+        enabled: yes
 
     - name: Install postgis apt packages
       apt:

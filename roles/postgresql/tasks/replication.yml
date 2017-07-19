@@ -5,6 +5,7 @@
       service:
         name: postgresql
         state: started
+        enabled: yes
 
     - include: psycopg2.yml
 
@@ -37,6 +38,7 @@
       service:
         name: postgresql
         state: stopped
+        enabled: yes
 
     - name: Remove old postgresql data dir
       file:
@@ -62,3 +64,4 @@
   service: 
     name: postgresql 
     state: started
+    enabled: yes

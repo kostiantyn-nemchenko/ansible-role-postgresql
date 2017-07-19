@@ -5,6 +5,7 @@
       service:
         name: postgresql
         state: started
+        enabled: yes
 
     - name: Create PostgreSQL databases
       become_user: postgres
