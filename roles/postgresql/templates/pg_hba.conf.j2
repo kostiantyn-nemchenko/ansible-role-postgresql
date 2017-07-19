@@ -1,0 +1,3 @@
+{% for client in postgresql_hba_access %}
+{{ client.type }}  {{ client.database }} {{ client.user }} {{ client.address|default('') }} {{ client.auth_method }}
+{% endfor %}
