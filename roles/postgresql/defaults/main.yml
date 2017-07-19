@@ -8,6 +8,9 @@ postgresql_apt_packages:
   - { pkg: "postgresql-{{ postgresql_version }}",            state: "latest" }
   - { pkg: "postgresql-contrib-{{ postgresql_version }}",    state: "latest" }
   - { pkg: "postgresql-server-dev-{{ postgresql_version }}", state: "latest" }
+  - { pkg: "postgresql-client-{{ postgresql_version }}",     state: "latest" }
+  - { pkg: "postgresql-doc-{{ postgresql_version }}",        state: "latest" }
+  - { pkg: "postgresql-{{ postgresql_version }}-dbg",        state: "latest" }
 
 postgresql_admin_username: postgres
 postgresql_admin_password: supersercretpostgrespasswd
