@@ -11,6 +11,8 @@
       apt:
         pkg: "postgresql-{{ postgresql_version }}-postgis-*"
         state: "{{ item.state }}"
+        update_cache: yes
+        cache_valid_time: 3600
       when: 'item.name == "postgis"'
       with_items:
         - "{{ postgresql_extensions }}"
