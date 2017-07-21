@@ -3,6 +3,7 @@
 - name: Define master host variable
   set_fact:
     postgresql_master_host: "{{ postgresql_master_internal_host if postgresql_master_internal_host is defined else postgresql_master_external_host }}"
+    postgresql_slave_host: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] if postgresql_master_internal_host is defined else ansible_host }}"
 
 - block:
     - name: Ensure PostgreSQL primary server is running
@@ -27,7 +28,7 @@
     - name: Add rule in pg_hba.conf on primary server to allow streaming replication
       lineinfile:
         dest: "{{ postgresql_config_dir }}/pg_hba.conf"
-        line: "host replication {{ postgresql_replication_user.name }} {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] if postgresql_master_internal_host is defined else ansible_host }}/32 md5"
+        line: "host replication {{ postgresql_replication_user.name }} {{ postgresql_slave_host }}/32 md5"
       register: hba_file_state
 
     - name: Apply changes in pg_hba.conf file
