@@ -12,61 +12,74 @@
         state: started
         enabled: yes
 
-    - include: psycopg2.yml
-
-    - name: Create PostgreSQL replication user on primary server
+    - name: Get list of slaves
       become_user: postgres
-      postgresql_user:
-        state: "{{ postgresql_replication_user.state | default('present') }}"
-        name: "{{ postgresql_replication_user.name }}"
-        password: "{{ postgresql_replication_user.password }}"
-        role_attr_flags: "LOGIN,REPLICATION"
-        login_user: "{{ postgresql_admin_username }}"
-        login_password: "{{ postgresql_admin_password }}"
-        port: "{{ postgresql_master_port|default(5432) }}"
-
-    - name: Add rule in pg_hba.conf on primary server to allow streaming replication
-      lineinfile:
-        dest: "{{ postgresql_config_dir }}/pg_hba.conf"
-        line: "host replication {{ postgresql_replication_user.name }} {{ postgresql_slave_host }}/32 md5"
-      register: hba_file_state
-
-    - name: Apply changes in pg_hba.conf file
-      service:
-        name: postgresql
-        state: reloaded
-      when: hba_file_state|changed
+      command: /usr/lib/postgresql/{{ postgresql_version }}/bin/psql -Atc "SELECT client_addr FROM pg_stat_replication WHERE client_addr = '{{ postgresql_slave_host }}'"
+      environment:
+        PGAPPNAME: ansible
+      register: postgresql_slaves_list
   delegate_to: "{{ postgresql_master_external_host }}"
 
 - block:
-    - name: Ensure PostgreSQL is stopped
-      service:
-        name: postgresql
-        state: stopped
+    - block:
+        - include: psycopg2.yml
+
+        - name: Create PostgreSQL replication user on primary server
+          become_user: postgres
+          postgresql_user:
+            state: "{{ postgresql_replication_user.state | default('present') }}"
+            name: "{{ postgresql_replication_user.name }}"
+            password: "{{ postgresql_replication_user.password }}"
+            role_attr_flags: "LOGIN,REPLICATION"
+            login_user: "{{ postgresql_admin_username }}"
+            login_password: "{{ postgresql_admin_password }}"
+            port: "{{ postgresql_master_port|default(5432) }}"
+
+        - name: Add rule in pg_hba.conf on primary server to allow streaming replication
+          lineinfile:
+            dest: "{{ postgresql_config_dir }}/pg_hba.conf"
+            line: "host replication {{ postgresql_replication_user.name }} {{ postgresql_slave_host }}/32 md5"
+          register: hba_file_state
+
+        - name: Apply changes in pg_hba.conf file
+          service:
+            name: postgresql
+            state: reloaded
+          when: hba_file_state|changed
+      delegate_to: "{{ postgresql_master_external_host }}"
+ 
+    - block:
+        - name: Ensure PostgreSQL is stopped
+          service:
+            name: postgresql
+            state: stopped
+            enabled: yes
+
+        - name: Remove old postgresql data dir
+          file:
+            path: "{{ postgresql_data_dir }}/"
+            state: absent
+      when: postgresql_remove_old_data_dir      
+
+    - name: Create .pgpass file entry to connect to primary server
+      lineinfile:
+        dest: ~postgres/.pgpass
+        line: "{{ postgresql_master_host }}:{{ postgresql_master_port|default(5432) }}:replication:{{ postgresql_replication_user.name }}:{{ postgresql_replication_user.password }}"
+        owner: postgres
+        group: postgres
+        mode: 0600
+
+    - name: Take base backup of a running PostgreSQL primary server
+      become_user: postgres
+      command: "/usr/lib/postgresql/{{ postgresql_version }}/bin/pg_basebackup -R -X stream -c fast -h {{ postgresql_master_host }} -p {{ postgresql_master_port|default(5432) }} -D {{ postgresql_data_dir }} -U {{ postgresql_replication_user.name }}"
+      environment:
+        PGAPPNAME: ansible
+      args:
+        creates: "{{ postgresql_data_dir }}/base"
+
+    - name: Ensure PostgreSQL standby server is running
+      service: 
+        name: postgresql 
+        state: started
         enabled: yes
-
-    - name: Remove old postgresql data dir
-      file:
-        path: "{{ postgresql_data_dir }}/"
-        state: absent
-  when: postgresql_remove_old_data_dir      
-
-- name: Create .pgpass file entry to connect to primary server
-  lineinfile:
-    dest: ~postgres/.pgpass
-    line: "{{ postgresql_master_host }}:{{ postgresql_master_port|default(5432) }}:replication:{{ postgresql_replication_user.name }}:{{ postgresql_replication_user.password }}"
-    owner: postgres
-    group: postgres
-    mode: 0600
-
-- name: Take base backup of a running PostgreSQL primary server
-  become_user: postgres
-  command: "/usr/lib/postgresql/{{ postgresql_version }}/bin/pg_basebackup -R -X stream -c fast -h {{ postgresql_master_host }} -p {{ postgresql_master_port|default(5432) }} -D {{ postgresql_data_dir }} -U {{ postgresql_replication_user.name }}"
-  args:
-    creates: "{{ postgresql_data_dir }}/base"
-
-- name: Ensure PostgreSQL standby server is running
-  service: 
-    name: postgresql 
-    state: started
-    enabled: yes
+  when: postgresql_slave_host not in postgresql_slaves_list.stdout
