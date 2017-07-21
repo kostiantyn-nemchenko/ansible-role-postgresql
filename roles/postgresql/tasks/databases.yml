@@ -15,5 +15,4 @@
         owner: "{{ item.owner }}"
       with_items:
         - "{{ postgresql_databases }}"
-  when:
-    postgresql_databases|length > 0
+  when: postgresql_databases|length > 0
