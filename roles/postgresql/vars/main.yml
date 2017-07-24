@@ -248,10 +248,10 @@ postgresql_config_settings:
 #------------------------------------------------------------------------------
 # Resource Usage / Background Writer
 #------------------------------------------------------------------------------ 
-  - { name: "bgwriter_delay",          value: "10000ms", state: "present", context: "sighup" }
-  - { name: "bgwriter_flush_after",    value: "512kB",   state: "absent",  context: "sighup" }
-  - { name: "bgwriter_lru_maxpages",   value: "1000",    state: "present", context: "sighup" }
-  - { name: "bgwriter_lru_multiplier", value: "10.0",    state: "present", context: "sighup" }
+  - { name: "bgwriter_delay",          value: "10ms",  state: "present", context: "sighup" }
+  - { name: "bgwriter_flush_after",    value: "512kB", state: "absent",  context: "sighup" }
+  - { name: "bgwriter_lru_maxpages",   value: "1000",  state: "present", context: "sighup" }
+  - { name: "bgwriter_lru_multiplier", value: "10.0",  state: "present", context: "sighup" }
 #------------------------------------------------------------------------------
 # Resource Usage / Cost-Based Vacuum Delay
 #------------------------------------------------------------------------------
