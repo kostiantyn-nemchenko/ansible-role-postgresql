@@ -292,11 +292,11 @@ postgresql_config_settings:
 #------------------------------------------------------------------------------
 # Statistics / Query and Index Statistics Collector
 #------------------------------------------------------------------------------
-  - { name: "stats_temp_directory", value: "'/var/run/postgresql/main-main.pg_stat_tmp'", state: "absent",  context: "sighup" }
-  - { name: "track_activities",     value: "on",                                          state: "absent",  context: "superuser" }
-  - { name: "track_counts",         value: "on",                                          state: "absent",  context: "superuser" }
-  - { name: "track_functions",      value: "pl",                                          state: "present", context: "superuser" }
-  - { name: "track_io_timing",      value: "on",                                          state: "present", context: "superuser" }
+  - { name: "stats_temp_directory", value: "'/var/run/postgresql/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pg_stat_tmp'", state: "absent",  context: "sighup" }
+  - { name: "track_activities",     value: "on",                                                                                       state: "absent",  context: "superuser" }
+  - { name: "track_counts",         value: "on",                                                                                       state: "absent",  context: "superuser" }
+  - { name: "track_functions",      value: "pl",                                                                                       state: "present", context: "superuser" }
+  - { name: "track_io_timing",      value: "on",                                                                                       state: "present", context: "superuser" }
 #------------------------------------------------------------------------------
 # Version and Platform Compatibility / Other Platforms and Clients
 #------------------------------------------------------------------------------ 
