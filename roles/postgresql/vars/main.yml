@@ -280,7 +280,7 @@ postgresql_config_settings:
   - { name: "replacement_sort_tuples",    value: "150000",                                   state: "absent",  context: "user" }
   - { name: "shared_buffers",             value: "{{ ( ansible_memtotal_mb / 4 )|int }}MB",  state: "present", context: "postmaster" }
   - { name: "temp_buffers",               value: "8MB",                                      state: "absent",  context: "user" }
-  - { name: "track_activity_query_size",  value: "4096",                                     state: "present", context: "postmaster" }
+  - { name: "track_activity_query_size",  value: "32767",                                    state: "present", context: "postmaster" }
   - { name: "work_mem",                   value: "4MB",                                      state: "present", context: "user" }
 #------------------------------------------------------------------------------
 # Statistics / Monitoring
