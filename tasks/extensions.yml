@@ -1,0 +1,15 @@
+---
+- name: Manage PostgreSQL extensions
+  become_user: postgres
+  postgresql_ext:
+    ext: "{{ item[1].ext }}"
+    state: "{{ item[1].state |default('present') }}"
+    db: "{{ item[0].db }}"
+    port: "{{ postgresql_port |default(5432) }}"
+  when: |
+    postgresql_databases |length > 0 and 
+    postgresql_extensions |length > 0 and 
+    item[0].db == item[1].db
+  with_nested:
+    - "{{ postgresql_databases }}"
+    - "{{ postgresql_extensions }}"

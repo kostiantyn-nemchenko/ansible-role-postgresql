@@ -1,0 +1,24 @@
+---
+
+sudo: required
+
+env:
+  - ANSIBLE_VERSION: 2.4.0.0
+
+before_install:
+  - apt -qq update
+
+install:
+  - apt -qq install python-pip git -y
+  - pip install --upgrade pip -q
+  - pip install --upgrade ansible==${ANSIBLE_VERSION} -q
+  - ansible --version
+
+script:
+  - git clone https://github.com/kostiantyn-nemchenko/ansible-module-postgresql-setting /tmp/postgresql-setting
+#  - ansible-lint tests/test.yml
+  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check > /dev/null
+  - ANSIBLE_LIBRARY=/tmp/postgresql-setting/library ansible-playbook -i tests/inventory tests/test.yml -Dvv
+
+#notifications:
+#  webhooks: https://galaxy.ansible.com/api/v1/notifications/

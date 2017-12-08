@@ -1,0 +1,19 @@
+---
+- name: Manage PostgreSQL users
+  become_user: postgres
+  postgresql_user:
+    name: "{{ item.name }}"
+    state: "{{ item.state |default('present') }}"
+    conn_limit: "{{ item.conn_limit |default(-1) }}"
+    db: "{{ item.db |default('postgres') }}"
+    encrypted: "{{ item.encrypted |default(true) }}"
+    expires: "{{ item.expires |default('infinity') }}"
+    fail_on_user: "{{ item.fail_on_user |default(true) }}"
+    no_password_changes: "{{ item.no_password_changes |default(false) }}"
+    password: "{{ item.password |default(None) }}"
+    port: "{{ postgresql_port |default(5432) }}"
+    priv: "{{ item.priv |default(None) }}"
+    role_attr_flags: "{{ item.role_attr_flags |default(None) }}"
+  when: postgresql_users |length > 0
+  with_items:
+    - "{{ postgresql_users }}" 

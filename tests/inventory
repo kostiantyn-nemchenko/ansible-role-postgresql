@@ -1,0 +1,5 @@
+[all:vars]
+ansible_connection=local
+
+[postgresql]
+local-postgresql-node ansible_host=127.0.0.1

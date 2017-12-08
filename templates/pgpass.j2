@@ -1,0 +1,3 @@
+{% for rule in postgresql_pgpass_rules %}
+    {{ rule.host |default('*') }}:{{ rule.port |default('*') }}:{{ rule.database |default('*') }}:{{ rule.user |default('*') }}:{{ rule.password |default('') }}
+{% endfor %}

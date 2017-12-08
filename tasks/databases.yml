@@ -1,0 +1,15 @@
+---
+- name: Manage PostgreSQL databases
+  become_user: postgres
+  postgresql_db:
+    db: "{{ item.db }}"
+    state: "{{ item.state |default('present') }}"
+    encoding: "{{ item.encoding |default(None) }}"
+    lc_collate: "{{ item.lc_collate |default(None) }}"
+    lc_ctype: "{{ item.lc_ctype |default(None) }}"
+    owner: "{{ item.owner |default(None) }}"
+    port: "{{ postgresql_port |default(5432) }}"
+    template: "{{ item.template |default(None) }}"
+  when: postgresql_databases |length > 0
+  with_items:
+    - "{{ postgresql_databases }}"
