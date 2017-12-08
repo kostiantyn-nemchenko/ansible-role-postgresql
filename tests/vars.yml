@@ -1,6 +1,6 @@
 ---
 postgresql_databases: #[]
-  - { db: "ansible_test", state: "present", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "dev_dbo", template: "template1" }
+  - { db: "ansible_test", state: "present", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "postgres", template: "template1" }
 
 postgresql_users: #[]
   - { 

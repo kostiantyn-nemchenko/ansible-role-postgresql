@@ -2,6 +2,6 @@
 - hosts: postgresql
   become: yes
   vars_files:
-    - vars.yml
+    - /tmp/tests/vars.yml
   roles:
-    - ../../ansible-role-postgresql
+    - postgresql

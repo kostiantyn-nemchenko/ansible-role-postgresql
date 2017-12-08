@@ -1,0 +1,4 @@
+---
+- src: https://github.com/kostiantyn-nemchenko/ansible-role-postgresql
+  version: master
+  name: postgresql
