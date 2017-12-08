@@ -17,6 +17,7 @@ before_install:
     sleep 3
     docker exec ${DISTRIBUTION}-${DISTRIBUTION_VERSION} true
     docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "apt -qq update"
+    docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "locale-gen"
 install:
   - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "apt -qq install sudo python-pip git curl -y > /dev/null && pip install --upgrade pip -q && pip install ansible==${ANSIBLE_VERSION} -q"
   - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ansible --version"
