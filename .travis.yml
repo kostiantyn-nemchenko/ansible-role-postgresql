@@ -7,12 +7,12 @@ env:
   - ANSIBLE_VERSION: 2.4.0.0
 
 before_install:
-  - apt -qq update
+  - sudo apt -qq update
 
 install:
-  - apt -qq install python-pip git -y
-  - pip install --upgrade pip -q
-  - pip install --upgrade ansible==${ANSIBLE_VERSION} -q
+  - sudo apt -qq install python-pip git -y
+  - sudo pip install --upgrade pip -q
+  - sudo pip install --upgrade ansible==${ANSIBLE_VERSION} -q
   - ansible --version
 
 script:
