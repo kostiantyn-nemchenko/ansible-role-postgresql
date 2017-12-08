@@ -1,3 +1,0 @@
-{% for entry in postgresql_pgpass_entries %}
-{{ entry.host|default('*') }}:{{ entry.port|default('*') }}:{{ entry.database|default('*') }}:{{ entry.user|default('*') }}:{{ entry.password|default('*') }}
-{% endfor %}
