@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Kostiantyn Nemchenko
+  description: An Ansible role which installs and configures PostgreSQL - the world's most advanced open source database
+  company:
+  license: MIT
+  min_ansible_version: 2.4.0.0
+  platforms:
+  - name: Ubuntu
+    versions:
+    - xenial
+    - trusty
+  galaxy_tags:
+  - postgresql
+  - database
+  - rdbms
+dependencies: []
