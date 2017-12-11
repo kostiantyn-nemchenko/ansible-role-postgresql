@@ -37,7 +37,7 @@ after_success:
   - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -P pager=off -c \"select name, setting from pg_settings where setting <> boot_val and context <> 'internal'\""
   - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -P pager=off -c \"select * from pg_user\""
   - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -P pager=off -c \"select * from pg_database where not datistemplate and datname <> 'postgres'\""
-  - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -P pager=off -c \"select * from pg_extension\""
+  - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -P pager=off ansible_test -c \"select * from pg_extension\""
   - docker rm -vf ${DISTRIBUTION}-${DISTRIBUTION_VERSION}
 
 after_failure:
