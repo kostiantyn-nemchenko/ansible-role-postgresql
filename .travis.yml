@@ -8,7 +8,10 @@ env:
     DISTRIBUTION_VERSION: 16.04
     ANSIBLE_VERSION: 2.4.0.0
     DOCKER_INIT: /lib/systemd/systemd
-
+  - DISTRIBUTION: ubuntu
+    DISTRIBUTION_VERSION: 14.04
+    ANSIBLE_VERSION: 2.4.0.0
+    DOCKER_INIT: /sbin/init
 before_install:
   - |
     set -e
@@ -16,9 +19,10 @@ before_install:
     docker run -d -v "${PWD}/tests":/tmp/tests --name="${DISTRIBUTION}-${DISTRIBUTION_VERSION}" --privileged ${DISTRIBUTION}:${DISTRIBUTION_VERSION} ${DOCKER_INIT}
     sleep 3
     docker exec ${DISTRIBUTION}-${DISTRIBUTION_VERSION} true
-    docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "apt -qq update"
+    docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "apt-get -qq update && apt-get install apt-utils -y"
 install:
-  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "apt -qq install locales sudo python-pip git curl -y > /dev/null && pip install --upgrade pip -q && pip install ansible==${ANSIBLE_VERSION} -q"
+  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "apt-get -qq install sudo python-pip git curl locales -y > /dev/null && pip install --upgrade pip setuptools -q && pip install ansible==${ANSIBLE_VERSION} -q"
+  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "locale-gen --purge en_US.UTF-8 && echo 'LANG="en_US.UTF-8" LANGUAGE="en_US:en"' > /etc/default/locale"
   - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ansible --version"
 
 script:
@@ -27,5 +31,15 @@ script:
   - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ANSIBLE_LIBRARY=/tmp/postgresql-setting/library ansible-playbook -i /tmp/tests/inventory /tmp/tests/test.yml --syntax-check"
   - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ANSIBLE_LIBRARY=/tmp/postgresql-setting/library ansible-playbook -i /tmp/tests/inventory /tmp/tests/test.yml -Dvv"
 
-#notifications:
-#  webhooks: https://galaxy.ansible.com/api/v1/notifications/  
+after_success:
+  - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "cat /var/lib/postgresql/.pgpass"
+  - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -c \"select * from pg_hba_file_rules\""
+  - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -c \"select name, setting from pg_settings where setting <> boot_val and context <> 'internal'\""
+  - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -c \"select * from pg_user\""
+  - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -c \"select * from pg_database where not datistemplate and datname <> 'postgres'\""
+  - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "psql -c \"select * from pg_extension\""
+  - docker rm -vf ${DISTRIBUTION}-${DISTRIBUTION_VERSION}
+
+after_failure:
+  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "tail -n500 /var/log/postgresql/postgresql-*"
+  - docker rm -vf ${DISTRIBUTION}-${DISTRIBUTION_VERSION}
