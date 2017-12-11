@@ -8,10 +8,10 @@ env:
     DISTRIBUTION_VERSION: 16.04
     ANSIBLE_VERSION: 2.4.0.0
     DOCKER_INIT: /lib/systemd/systemd
-  - DISTRIBUTION: ubuntu
-    DISTRIBUTION_VERSION: 14.04
-    ANSIBLE_VERSION: 2.4.0.0
-    DOCKER_INIT: /sbin/init
+#  - DISTRIBUTION: ubuntu
+#    DISTRIBUTION_VERSION: 14.04
+#    ANSIBLE_VERSION: 2.4.0.0
+#    DOCKER_INIT: /sbin/init
 before_install:
   - |
     set -e
