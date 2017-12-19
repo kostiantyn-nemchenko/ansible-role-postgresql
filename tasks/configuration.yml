@@ -1,6 +1,5 @@
 ---
 - name: Configure PostgreSQL pgpass-based access
-  become_user: postgres
   template:
     src: pgpass.j2
     dest: "{{ postgresql_home_dir }}/.pgpass"
