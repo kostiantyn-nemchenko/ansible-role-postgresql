@@ -6,7 +6,7 @@ services: docker
 env:
   - DISTRIBUTION: ubuntu
     DISTRIBUTION_VERSION: 16.04
-    ANSIBLE_VERSION: 2.4.0.0
+    ANSIBLE_VERSION: 2.4
     DOCKER_INIT: /lib/systemd/systemd
 #  - DISTRIBUTION: ubuntu
 #    DISTRIBUTION_VERSION: 14.04
@@ -16,7 +16,7 @@ before_install:
   - |
     set -e
 
-    docker run -d -v "${PWD}/tests":/tmp/tests --name="${DISTRIBUTION}-${DISTRIBUTION_VERSION}" --privileged ${DISTRIBUTION}:${DISTRIBUTION_VERSION} ${DOCKER_INIT}
+    docker run -d -v "${PWD}":/tmp/postgresql --name="${DISTRIBUTION}-${DISTRIBUTION_VERSION}" --privileged ${DISTRIBUTION}:${DISTRIBUTION_VERSION} ${DOCKER_INIT}
     sleep 3
     docker exec ${DISTRIBUTION}-${DISTRIBUTION_VERSION} true
     docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "apt-get -qq update && apt-get install apt-utils -y"
@@ -26,10 +26,8 @@ install:
   - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ansible --version"
 
 script:
-  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ansible-galaxy install -r /tmp/tests/requirements.yml"
-  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "git clone https://github.com/kostiantyn-nemchenko/ansible-module-postgresql-setting /tmp/postgresql-setting"
-  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ANSIBLE_LIBRARY=/tmp/postgresql-setting/library ansible-playbook -i /tmp/tests/inventory /tmp/tests/test.yml --syntax-check"
-  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ANSIBLE_LIBRARY=/tmp/postgresql-setting/library ansible-playbook -i /tmp/tests/inventory /tmp/tests/test.yml -Dvv"
+  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ansible-playbook -i /tmp/postgresql/tests/inventory /tmp/postgresql/tests/test.yml --syntax-check"
+  - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "ansible-playbook -i /tmp/postgresql/tests/inventory /tmp/postgresql/tests/test.yml -Dvv"
 
 after_success:
   - docker exec -u postgres -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "cat /var/lib/postgresql/.pgpass"
@@ -42,4 +40,4 @@ after_success:
 
 after_failure:
   - docker exec -t ${DISTRIBUTION}-${DISTRIBUTION_VERSION} /bin/sh -c "tail -n500 /var/log/postgresql/postgresql-*"
-  - docker rm -vf ${DISTRIBUTION}-${DISTRIBUTION_VERSION}
+  - docker rm -vf  ${DISTRIBUTION}-${DISTRIBUTION_VERSION}

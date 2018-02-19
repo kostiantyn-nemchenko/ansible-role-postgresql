@@ -2,6 +2,6 @@
 - hosts: postgresql
   become: yes
   vars_files:
-    - /tmp/tests/vars.yml
+    - vars.yml
   roles:
-    - postgresql
+    - ../../postgresql
