@@ -114,4 +114,4 @@
     - hosts: postgresql-servers
       become: yes
       roles:
-        - postgresql
+        - kostiantyn_nemchenko.postgresql
