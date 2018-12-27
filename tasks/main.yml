@@ -2,19 +2,18 @@
 - import_tasks: installation.yml
   tags: ['postgresql-installation']
 
-- import_tasks: psycopg2.yml
-  tags: 
-    - postgresql-users
-    - postgresql-databases
-    - postgresql-extensions
-
 - name: Ensure PostgreSQL is running
   service:
     name: postgresql
     state: started
     enabled: yes
-  tags: 
-    - postgresql-configuration
+  tags:
+    - postgresql-users
+    - postgresql-databases
+    - postgresql-extensions
+
+- import_tasks: psycopg2.yml
+  tags:
     - postgresql-users
     - postgresql-databases
     - postgresql-extensions
@@ -26,7 +25,7 @@
   tags: ['postgresql-users']
 
 - import_tasks: databases.yml
-  tags: ['postgresql-databases'] 
+  tags: ['postgresql-databases']
 
 - import_tasks: extensions.yml
   tags: ['postgresql-extensions']

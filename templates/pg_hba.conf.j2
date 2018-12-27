@@ -85,6 +85,6 @@
 
 # TYPE      DATABASE                 USER                     ADDRESS                  METHOD
 
-{% for client in postgresql_hba_access %}
+{% for client in postgresql_hba_conf %}
   {{ client.type.ljust(10) |default('host') }}{{ client.database.ljust(25) |default('all') }}{{ client.user.ljust(25) |default('all') }}{{ client.address.ljust(25) |default('') }}{{ client.auth_method |default('md5') }}
 {% endfor %}

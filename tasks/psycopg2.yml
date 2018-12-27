@@ -7,10 +7,9 @@
         cache_valid_time: 3600
 
     - name: Install psycopg2 adapter
-      pip: 
+      pip:
         name: psycopg2
   when: |
-    postgresql_config_settings |length > 0 or
     postgresql_users |length > 0 or
     postgresql_databases |length > 0 or
     postgresql_extensions |length > 0

@@ -1,21 +1,30 @@
 ---
-- name: Configure PostgreSQL APT key
-  apt_key: 
-    url: "{{ postgresql_apt_key_url }}" 
-    state: present
+- name: Configure PostgreSQL repository key
+  apt_key:
+    url: "{{ postgresql_repo_key_url }}"
 
-- name: Configure PostgreSQL APT repository
-  apt_repository: 
-    repo: "{{ postgresql_apt_repo }}"
-    state: present
+- name: Configure PostgreSQL repository
+  apt_repository:
+    repo: "{{ postgresql_repo }}"
 
-- name: Install PostgreSQL APT packages
-  apt: 
+- name: Ensure postgresql database-cluster manager package
+  package:
+    name: postgresql-common
+    update_cache: yes
+
+- name: Enable data checksums for new clusters
+  replace:
+    path: /etc/postgresql-common/createcluster.conf
+    replace: initdb_options = '--data-checksums'
+    regexp: ^#?initdb_options.*$
+
+- name: Install PostgreSQL packages
+  apt:
     pkg: "{{ item.pkg }}"
     state: "{{ item.state |default('present') }}"
     update_cache: yes
     cache_valid_time: 3600
   with_items:
-    - "{{ postgresql_apt_packages }}"
+    - "{{ postgresql_system_packages }}"
   notify:
     - Start PostgreSQL
