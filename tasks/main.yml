@@ -18,6 +18,8 @@
     - postgresql-databases
     - postgresql-extensions
 
+- meta: flush_handlers
+
 - import_tasks: configuration.yml
   tags: ['postgresql-configuration']
 

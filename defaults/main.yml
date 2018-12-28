@@ -4,12 +4,16 @@ postgresql_cluster_name: main
 postgresql_repo_key_url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
 postgresql_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
 postgresql_system_packages:
-  - { pkg: "postgresql-{{ postgresql_version }}",            state: "present" }
-  - { pkg: "postgresql-client-{{ postgresql_version }}",     state: "present" }
-  - { pkg: "postgresql-contrib-{{ postgresql_version }}",    state: "present" }
-  - { pkg: "postgresql-server-dev-{{ postgresql_version }}", state: "present" }
-  - { pkg: "postgresql-doc-{{ postgresql_version }}",        state: "present" }
-  - { pkg: "postgresql-{{ postgresql_version }}-dbg",        state: "present" }
+  - { pkg: "postgresql-{{ postgresql_version }}",                state: "present" }
+  - { pkg: "postgresql-client-{{ postgresql_version }}",         state: "present" }
+  - { pkg: "postgresql-contrib-{{ postgresql_version }}",        state: "present" }
+  - { pkg: "postgresql-server-dev-{{ postgresql_version }}",     state: "present" }
+  - { pkg: "postgresql-doc-{{ postgresql_version }}",            state: "present" }
+  - { pkg: "postgresql-{{ postgresql_version }}-dbgsym",         state: "present" }
+  - { pkg: "postgresql-{{ postgresql_version }}-hypopg",         state: "present" }
+  - { pkg: "postgresql-{{ postgresql_version }}-repack",         state: "present" }
+  - { pkg: "postgresql-{{ postgresql_version }}-pg-stat-kcache", state: "present" }
+  - { pkg: "postgresql-plpython3-{{ postgresql_version }}",      state: "present" }
 
 postgresql_home_dir: /var/lib/postgresql
 postgresql_config_dir: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
@@ -42,7 +46,7 @@ postgresql_extensions:
   - { ext: "pg_stat_statements", state: "present", db: "template1" }
   - { ext: "pgrowlocks",         state: "present", db: "template1" }
   - { ext: "pgstattuple",        state: "present", db: "template1" }
-# - { ext: "pg_stat_kcache",     state: "present", db: "template1" } #TODO: build and create custom extensions
+  - { ext: "pg_stat_kcache",     state: "present", db: "template1" }
 
 postgresql_sysctl_conf:
   - { name: "vm.zone_reclaim_mode",           value: "0",       sysctl_set: "yes", state: "present", reload: "yes" }
@@ -78,7 +82,7 @@ postgresql_conf:
   - { guc: "max_worker_processes",                value: "8",                                                        state: "present", context: "postmaster" } # Maximum number of concurrent worker processes.
   - { guc: "port",                                value: "{{ postgresql_port }}",                                    state: "present", context: "postmaster" } # Sets the TCP port the server listens on.
   - { guc: "shared_buffers",                      value: "{{ ( ansible_memtotal_mb * 0.25 )|int }}MB",               state: "present", context: "postmaster" } # Sets the number of shared memory buffers used by the server.
-  - { guc: "shared_preload_libraries",            value: "'pg_stat_statements'",                                     state: "present", context: "postmaster" } # Lists shared libraries to preload into server.
+  - { guc: "shared_preload_libraries",            value: "'pg_stat_statements,pg_stat_kcache'",                      state: "present", context: "postmaster" } # Lists shared libraries to preload into server.
   - { guc: "superuser_reserved_connections",      value: "10",                                                       state: "present", context: "postmaster" } # Sets the number of connection slots reserved for superusers.
   - { guc: "track_activity_query_size",           value: "32767",                                                    state: "present", context: "postmaster" } # Sets the size reserved for pg_stat_activity.query, in bytes.
   - { guc: "wal_level",                           value: "replica",                                                  state: "present", context: "postmaster" } # Set the level of information written to the WAL.
