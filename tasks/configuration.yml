@@ -50,3 +50,5 @@
       notify:
         - Restart PostgreSQL
   when: postgresql_conf |length > 0
+
+- meta: flush_handlers
