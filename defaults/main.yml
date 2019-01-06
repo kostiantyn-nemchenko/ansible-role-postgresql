@@ -42,10 +42,12 @@ postgresql_extensions:
   - { ext: "amcheck",            state: "present", db: "template1" }
   - { ext: "pageinspect",        state: "present", db: "template1" }
   - { ext: "pg_buffercache",     state: "present", db: "template1" }
+  - { ext: "pg_freespacemap",    state: "present", db: "template1" }
   - { ext: "pg_prewarm",         state: "present", db: "template1" }
-  - { ext: "pg_stat_statements", state: "present", db: "template1" }
   - { ext: "pgrowlocks",         state: "present", db: "template1" }
+  - { ext: "pg_stat_statements", state: "present", db: "template1" }
   - { ext: "pgstattuple",        state: "present", db: "template1" }
+  - { ext: "pg_visibility",      state: "present", db: "template1" }
   - { ext: "pg_stat_kcache",     state: "present", db: "template1" }
 
 postgresql_sysctl_conf:
