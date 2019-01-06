@@ -10,3 +10,4 @@ postgresql_system_packages:
   - { pkg: "postgresql-{{ postgresql_version }}-repack",         state: "present" }
   - { pkg: "postgresql-{{ postgresql_version }}-pg-stat-kcache", state: "present" }
   - { pkg: "postgresql-plpython3-{{ postgresql_version }}",      state: "present" }
+  - { pkg: "python-psycopg2",                                    state: "present" }

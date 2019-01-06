@@ -16,12 +16,6 @@
     - postgresql-databases
     - postgresql-extensions
 
-- import_tasks: psycopg2.yml
-  tags:
-    - postgresql-users
-    - postgresql-databases
-    - postgresql-extensions
-
 - meta: flush_handlers
 
 - import_tasks: configuration.yml
