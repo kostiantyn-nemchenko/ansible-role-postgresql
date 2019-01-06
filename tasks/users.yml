@@ -16,4 +16,4 @@
     role_attr_flags: "{{ item.role_attr_flags |default(None) }}"
   when: postgresql_users |length > 0
   with_items:
-    - "{{ postgresql_users }}" 
+    - "{{ postgresql_users }}"

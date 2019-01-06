@@ -1,4 +1,7 @@
 ---
+- import_tasks: sysctl.yml
+  when: postgresql_sysctl_conf |length > 0
+
 - name: Configure PostgreSQL pgpass-based access
   template:
     src: pgpass.j2
@@ -6,43 +9,46 @@
     owner: postgres
     group: postgres
     mode: 0600
-  when: postgresql_pgpass_rules |length > 0
+  when: postgresql_pgpass_conf |length > 0
 
 - name: Configure PostgreSQL host-based authentication
-  template: 
-    src: pg_hba.conf.j2 
+  template:
+    src: pg_hba.conf.j2
     dest: "{{ postgresql_config_dir }}/pg_hba.conf"
     owner: postgres
     group: postgres
     mode: 0644
-  when: postgresql_hba_access |length > 0
+  when: postgresql_hba_conf |length > 0
   notify:
     - Reload PostgreSQL
 
-- block:
-    - name: Configure PostgreSQL settings - postgres reload is enough to apply config changes
-      become_user: postgres
-      postgresql_setting:
-        guc: "{{ item.guc }}"
-        state: "{{ item.state|default('present') }}"
-        value: "{{ item.value|default(None) }}"
-        port: "{{ postgresql_port|default(5432) }}"
+- name: Configure server settings
+  block:
+    - replace:
+        path: "{{ postgresql_config_dir }}/postgresql.conf"
+        replace: "{{ (item.guc + ' = ' + item.value) if item.state == 'present' else ('#' + item.guc + ' = ' + item.value) }}"
+        regexp: "^#?{{ item.guc }} =(\\s*)(('.*')|(\\S*))(?=(?#))"
+        owner: postgres
+        group: postgres
+        mode: 0644
       when: item.context != "postmaster"
       with_items:
-        - "{{ postgresql_config_settings }}"
+        - "{{ postgresql_conf }}"
       notify:
         - Reload PostgreSQL
 
-    - name: Configure PostgreSQL settings - postgres restart is required to apply config changes
-      become_user: postgres
-      postgresql_setting:
-        guc: "{{ item.guc }}"
-        state: "{{ item.state|default('present') }}"
-        value: "{{ item.value|default(None) }}"
-        port: "{{ postgresql_port|default(5432) }}"
+    - replace:
+        path: "{{ postgresql_config_dir }}/postgresql.conf"
+        replace: "{{ (item.guc + ' = ' + item.value) if item.state == 'present' else ('#' + item.guc + ' = ' + item.value) }}"
+        regexp: "^#?{{ item.guc }} =(\\s*)(('.*')|(\\S*))(?=(?#))"
+        owner: postgres
+        group: postgres
+        mode: 0644
       when: item.context == "postmaster"
       with_items:
-        - "{{ postgresql_config_settings }}"
+        - "{{ postgresql_conf }}"
       notify:
         - Restart PostgreSQL
-  when: postgresql_config_settings |length > 0
+  when: postgresql_conf |length > 0
+
+- meta: flush_handlers

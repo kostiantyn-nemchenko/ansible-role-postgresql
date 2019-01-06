@@ -1,18 +1,18 @@
 ---
 - name: Start PostgreSQL
-  service: 
+  service:
     name: postgresql
     state: started
     enabled: yes
 
 - name: Restart PostgreSQL
-  service: 
+  service:
     name: postgresql
     state: restarted
     enabled: yes
 
 - name: Reload PostgreSQL
-  service: 
+  service:
     name: postgresql
     state: reloaded
     enabled: yes
